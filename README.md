@@ -32,23 +32,42 @@ pip install -r requirements.txt
 
 ### Creating Lookup Tables
 
-First, create lookup tables from datasets:
+In this repository, we create Lookup table beforehand to get the output of our genetic algorithms faster. In practice, we would run predictions on every new individidual of the population (each individual being a bitstring representing a feature combination).
+
+First, create lookup tables from datasets using table_creation.py. You will require a .csv dataset with columns included, and the target variable 
+named as 'Class' (see wine.csv for example). Once you have a lookup table created in /outputs folder, you can run main.py to find the best feature combination on your table(s).
+
+## Algorithms
+
+### Genetic Algorithm (GA)
+- Tournament selection
+- Single-point crossover
+- Bit-flip mutation
+- Elitism selection
+
+### NSGA-II
+- Non-dominated sorting
+- Crowding distance calculation
+- Binary tournament selection based on rank and crowding distance
+- Minimizes both error and number of features
+
+### Particle Swarm Optimization (PSO)
+- Binary PSO with sigmoid velocity transfer
+- Inertia weight decreasing over iterations
+- Cognitive and social components
+
+## Visualization (to be refactored)
 
 ```python
-import pandas as pd
-from src.table.creation import get_table, export_to_csv
+from src.table.analysis import visualization_2d, hinged_bitstring_map
 
-# Load your dataset
-dataset = pd.read_csv("your_dataset.csv")
-feature_columns = dataset.columns[:-1].tolist()  # All except target
-y = dataset.target
+# 2D visualization of the search space
+visualization_2d(table, "dataset_name")
 
-# Create lookup table
-table = get_table(dataset, feature_columns, y, penalty_factor=0.01)
-
-# Save to CSV
-export_to_csv(table, "dataset_name")
+# Hinged bitstring map
+hinged_bitstring_map(table, "dataset_name")
 ```
+
 
 ### Running Optimization Algorithms
 
@@ -93,49 +112,6 @@ ranks, fronts, population = nsga.run(
     mutation_rate=0.01,
     verbose=True
 )
-```
-
-### Using the Main Entry Point
-
-```python
-from main import run_genetic_algorithm, run_pso, load_table
-
-# Load tables
-table = load_table("wine")
-
-# Run algorithms
-result = run_genetic_algorithm(table, verbose=True)
-```
-
-## Algorithms
-
-### Genetic Algorithm (GA)
-- Tournament selection
-- Single-point crossover
-- Bit-flip mutation
-- Elitism selection
-
-### NSGA-II
-- Non-dominated sorting
-- Crowding distance calculation
-- Binary tournament selection based on rank and crowding distance
-- Minimizes both error and number of features
-
-### Particle Swarm Optimization (PSO)
-- Binary PSO with sigmoid velocity transfer
-- Inertia weight decreasing over iterations
-- Cognitive and social components
-
-## Visualization
-
-```python
-from src.table.analysis import visualization_2d, hinged_bitstring_map
-
-# 2D visualization of the search space
-visualization_2d(table, "dataset_name")
-
-# Hinged bitstring map
-hinged_bitstring_map(table, "dataset_name")
 ```
 
 ## Requirements

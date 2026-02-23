@@ -123,8 +123,13 @@ def export_to_csv(complete_table: dict, dataset_name: str, output_dir: str = "ou
     print(f"Complete table saved to {output_dir}/{dataset_name}_complete_table.csv")
 
 
-def csv_to_dict(csv_file: str) -> dict:
-    table = pd.read_csv(csv_file, dtype={"Binary representation": str})
-    table.index = table["Binary representation"]
-    table = table.drop(columns=["Binary representation"])
+def csv_to_dict(csv_file: str, has_headers: bool = True) -> dict:
+    if has_headers:
+        table = pd.read_csv(csv_file, dtype={"Binary representation": str})
+        table.index = table["Binary representation"]
+        table = table.drop(columns=["Binary representation"])
+    else:
+        table = pd.read_csv(csv_file, dtype={0: str}, header=None)
+        table.index = table[0]
+        table = table.drop(columns=[0])
     return table.to_dict(orient="index")

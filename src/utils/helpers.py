@@ -1,6 +1,6 @@
 import random
 import numpy as np
-
+import pandas as pd
 
 def generate_individual(length: int) -> str:
     return "".join(random.choice("01") for _ in range(length))
@@ -72,3 +72,7 @@ def bitstring_to_numpy(bitstring: str) -> np.ndarray:
 
 def numpy_to_bitstring(arr: np.ndarray) -> str:
     return "".join(str(int(gene)) for gene in arr)
+
+def get_columns(dataset_name: str, bitstring: str) -> list[int]:
+    dataset_columns = pd.read_csv(f"datasets/{dataset_name}.csv").columns[:-1].tolist()  # Exclude target
+    return [dataset_columns[i] for i, bit in enumerate(bitstring) if bit == "1"]

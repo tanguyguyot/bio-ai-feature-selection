@@ -47,6 +47,7 @@ class NSGA2(BaseAlgorithm):
                 (self._objective_error(ind, lookup_dict), helpers.count_features(ind))
                 for ind in new_population
             ]
+
             ranks, fronts = self._fast_non_dominated_sort(objectives)
             selected = self._selection(objectives, fronts, population_size)
             population = [new_population[i] for i in selected]
