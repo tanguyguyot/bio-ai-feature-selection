@@ -131,3 +131,49 @@ The project has been tested with:
 - Heart Diseases
 - Zoo
 - Letters
+- 
+## Results
+
+### Datasets & Setup
+Three UCI datasets were used (Glass: 9 features, Wine: 13 features, 
+Magic: 10 features), with a Decision Tree Classifier trained on a 70/30 
+split. Lookup tables were precomputed over all 2^n feature subsets, 
+serving as a cheap fitness function for the three algorithms.
+
+### Landscape Analysis
+| Dataset | Local Optima | Global Minimum Value | Best Feature Subset |
+|---------|-------------|---------------------|-------------------|
+| Glass   | 7           | 0.2862              | 110100100         |
+| Wine    | 163         | 0.0670              | 1000101000000     |
+| Magic   | 3           | 0.2051              | 1000000010        |
+
+Wine's landscape (163 local optima) proved significantly harder to 
+navigate than Magic's (3 local optima), which was reflected in algorithm 
+performance.
+
+### Algorithm Comparison (10 independent runs each)
+| Algorithm | Glass | Wine | Magic | Notes |
+|-----------|-------|------|-------|-------|
+| PSO  | 0.286 ± 0.000 | 0.067 ± 0.000 | 0.205 ± 0.000 | 100% global optimum rate on all 3 |
+| SGA  | 0.298 ± 0.019 | 0.071 ± 0.006 | 0.205 ± 0.000 | Higher variance on multimodal landscapes |
+| NSGA-II | 0.286 ± 0.000 | 0.067 ± 0.000 | 0.205 ± 0.000 | 100% global optimum rate on all 3 |
+
+**Key finding:** PSO and NSGA-II reliably found the global optimum across 
+all three landscapes. SGA struggled on Wine (the most multimodal landscape 
+with 163 local optima), achieving only 70% success rate and higher fitness 
+variance — consistent with the No Free Lunch theorem: SGA's greedy 
+selection pressure is a liability on rugged landscapes.
+
+### Blind Test Instances (Task 6)
+A Random Forest Classifier was used on three unseen datasets 
+(Heart, Zoo, Letters).
+
+| Dataset | Best Individual Found | Best Fitness | Notes |
+|---------|----------------------|--------------|-------|
+| Heart   | 010100110111         | 0.3111       | Hamming distance 0 from personal optimum |
+| Zoo     | 000000001011100      | 0.0781       | Hamming distance 0 from personal optimum |
+| Letters | 000000110001010      | 0.7768       | Exact match with reference solution |
+
+All three global optima were reached by the algorithms. Results diverged 
+from the reference solutions on Heart and Zoo, likely due to differences 
+in Random Forest initialization or train/test split randomness.
